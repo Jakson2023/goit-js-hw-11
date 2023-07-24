@@ -37,6 +37,7 @@ async function onLoadMore() {
 
 const axios = require('axios');
 async function serviceReq(search, page = 1) {
+  try {
   const response = await axios({
     method: 'get',
     baseURL: 'https://pixabay.com/api',
@@ -50,7 +51,7 @@ async function serviceReq(search, page = 1) {
       page: page,
     },
   });
-
+  
   if (response.status === 200 && response.data.hits.length !== 0) {
     elements.load.hidden = false;
     elements.load.style.display = 'block';
@@ -72,6 +73,10 @@ async function serviceReq(search, page = 1) {
     createMarkup(response.data.hits)
   );
   let gallery = new SimpleLightbox('.gallery a ', { captionDelay: 250 });
+  }
+  catch (error) {
+    console.log(error);
+  }
 }
 
 function createMarkup(arr) {
