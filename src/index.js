@@ -41,7 +41,7 @@ async function serviceReq(search, page = 1) {
   // try {
   const response = await axios({
     method: 'get',
-    baseURL: 'https://pixabay.com/api',
+    baseURL: 'https://pixabay.com/api/',
     params: {
       key: '38392384-4306dcd0758c0a555545ea085',
       q: search,
@@ -66,7 +66,7 @@ async function serviceReq(search, page = 1) {
     elements.load.hidden = true;
   }
   elements.gallery.insertAdjacentHTML('beforeend',createMarkup(response.data.hits));
-  let gallery = new SimpleLightbox('.gallery a ', { captionDelay: 250 });
+  new SimpleLightbox('.gallery a ', { captionDelay: 250 });
   
 
   // catch (error) {
