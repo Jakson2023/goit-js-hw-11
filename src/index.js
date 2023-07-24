@@ -16,6 +16,7 @@ const elements = {
   load: document.querySelector('.load-more'),
   input: document.querySelector('input'),
 };
+
 elements.load.addEventListener('click', onLoadMore);
 elements.form.addEventListener('submit', hendlerSearch);
 
@@ -37,7 +38,7 @@ async function onLoadMore() {
 
 
 async function serviceReq(search, page = 1) {
-  try {
+  // try {
   const response = await axios({
     method: 'get',
     baseURL: 'https://pixabay.com/api',
@@ -58,25 +59,20 @@ async function serviceReq(search, page = 1) {
   }
   if (response.data.hits.length === 0) {
     elements.load.style.display = 'none';
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
   }
   if (response.data.hits.length * page > response.data.totalHits) {
-    Notiflix.Notify.failure(
-      "We're sorry, but you've reached the end of search results."
-    );
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
     elements.load.hidden = true;
   }
-  elements.gallery.insertAdjacentHTML(
-    'beforeend',
-    createMarkup(response.data.hits)
-  );
+  elements.gallery.insertAdjacentHTML('beforeend',createMarkup(response.data.hits));
   let gallery = new SimpleLightbox('.gallery a ', { captionDelay: 250 });
-  }
-  catch (error) {
-    console.log(error);
-  }
+  
+
+  // catch (error) {
+  //   console.log(error);
+  // }
+
 }
 
 function createMarkup(arr) {
