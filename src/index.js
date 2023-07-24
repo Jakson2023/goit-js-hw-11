@@ -50,8 +50,8 @@ async function serviceReq(search, page = 1) {
       safesearch: true,
       per_page: 40,
       page: page,
-    },
-  });
+    }
+  })
   
   if (response.status === 200 && response.data.hits.length !== 0) {
     elements.load.hidden = false;
