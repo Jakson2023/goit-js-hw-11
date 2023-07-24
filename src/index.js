@@ -25,9 +25,16 @@ elements.load.hidden = true;
 async function hendlerSearch(e) {
   e.preventDefault();
   const { searchQuery } = e.currentTarget.elements;
-  serviceReq(searchQuery.value);
-  clearGallery();
+  const searchValue = searchQuery.value.trim();
+
+  if (searchValue) {
+    serviceReq(searchValue);
+    clearGallery();
+  } else { 
+    Notiflix.Notify.failure('Please enter your request');
+  }
 }
+
 
 let page = 1;
 async function onLoadMore() {
@@ -38,7 +45,6 @@ async function onLoadMore() {
 
 
 async function serviceReq(search, page = 1) {
-  // try {
   const response = await axios({
     method: 'get',
     baseURL: 'https://pixabay.com/api/',
@@ -68,11 +74,6 @@ async function serviceReq(search, page = 1) {
   elements.gallery.insertAdjacentHTML('beforeend',createMarkup(response.data.hits));
   new SimpleLightbox('.gallery a ', { captionDelay: 250 });
   
-
-  // catch (error) {
-  //   console.log(error);
-  // }
-
 }
 
 function createMarkup(arr) {
@@ -85,16 +86,16 @@ function createMarkup(arr) {
             </a>
             <div class="info">
               <p class="info-item">
-                <b>Likes ${likes}</b>
+                <b>Likes: ${likes}</b>
               </p>
               <p class="info-item">
-                <b>Views ${views}</b>
+                <b>Views: ${views}</b>
               </p>
               <p class="info-item">
-                <b>Comments ${comments}</b>
+                <b>Comments: ${comments}</b>
               </p>
               <p class="info-item">
-                <b>Downloads ${downloads}</b>
+                <b>Downloads: ${downloads}</b>
               </p>
             </div>
           </div>`
