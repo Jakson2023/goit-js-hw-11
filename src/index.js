@@ -70,6 +70,7 @@ async function serviceReq(search, page = 1) {
   if (response.data.hits.length * page > response.data.totalHits) {
     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
     elements.load.hidden = true;
+    elements.load.style.display = 'none';
   }
   elements.gallery.insertAdjacentHTML('beforeend',createMarkup(response.data.hits));
   new SimpleLightbox('.gallery a ', { captionDelay: 250 });
