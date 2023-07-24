@@ -35,7 +35,7 @@ async function onLoadMore() {
   await serviceReq(currentValue, page);
 }
 
-const axios = require('axios');
+
 async function serviceReq(search, page = 1) {
   try {
   const response = await axios({
