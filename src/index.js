@@ -21,6 +21,7 @@ elements.load.addEventListener('click', onLoadMore);
 elements.form.addEventListener('submit', hendlerSearch);
 
 elements.load.hidden = true;
+elements.load.style.display = 'none';
 
 async function hendlerSearch(e) {
   e.preventDefault();
@@ -30,11 +31,11 @@ async function hendlerSearch(e) {
   if (searchValue) {
     serviceReq(searchValue);
     clearGallery();
-  } else { 
+  } else {
     Notiflix.Notify.failure('Please enter your request');
   }
+  page = 1;
 }
-
 
 let page = 1;
 async function onLoadMore() {
@@ -42,7 +43,6 @@ async function onLoadMore() {
   page += 1;
   await serviceReq(currentValue, page);
 }
-
 
 async function serviceReq(search, page = 1) {
   const response = await axios({
@@ -56,31 +56,36 @@ async function serviceReq(search, page = 1) {
       safesearch: true,
       per_page: 40,
       page: page,
-    }
-  })
-  
-  if (response.status === 200 && response.data.hits.length !== 0) {
+    },
+  });
+
+  const perPageValue = response.config.params.per_page;
+
+  if (response.data.hits.length === 0) {
+    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+  } else {
     elements.load.hidden = false;
     elements.load.style.display = 'block';
   }
-  if (response.data.hits.length === 0) {
-    elements.load.style.display = 'none';
-    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-  }
-  if (response.data.hits.length * page > response.data.totalHits) {
-    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+  if (perPageValue * page >= response.data.totalHits && response.data.totalHits !== 0) {
     elements.load.hidden = true;
     elements.load.style.display = 'none';
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
+  if (page === 1 && response.data.totalHits !== 0) {
+    Notiflix.Notify.info(`Hooray! We found ${response.data.totalHits} images.`);
+  }
+  if (response.data.hits.length < perPageValue) {
+    elements.load.style.display = 'none';
+    elements.load.hidden = true;
   }
   elements.gallery.insertAdjacentHTML('beforeend',createMarkup(response.data.hits));
   new SimpleLightbox('.gallery a ', { captionDelay: 250 });
-  
 }
 
 function createMarkup(arr) {
   return arr
-    .map(
-      ({webformatURL,largeImageURL,tags,downloads,comments,views,likes,}) => `
+    .map(({webformatURL,largeImageURL,tags,downloads,comments,views,likes,}) => `
             <div class="photo-card">
             <a class="gallery__link" href="${largeImageURL}" >
             <img src="${webformatURL}" alt="${tags}" loading="lazy" />
